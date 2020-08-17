@@ -23,10 +23,9 @@ namespace APITest
         public DBCommunicator dbcom = new DBCommunicator();
 
         [HttpGet]
-        [Route("api/GetLicence/{licence}")]
+        [Route("api/GetLicenceInfo/{licence}")]
         public IActionResult GetLicenceInfo(string licence) // Controll with licence string
         {
-
             #region WithC#
             DBCommunicator dbcom = new DBCommunicator();
             return StatusCode(200, dbcom.FetchData(licence));
@@ -58,82 +57,84 @@ namespace APITest
         [Route("api/AddNewLicence")]
         public IActionResult AddNewLicence([FromBody] LicenceInfoModel licence)
         {
-            bool newLicense = false;
+            Console.WriteLine($"Got a InfoModel: {licence.LicenceNo}!");
+            return new AcceptedResult();
+            //bool newLicense = false;
 
-            using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
-            {
-                string query = "SELECT Select LicenceNo From LicenceInfo WHERE LicenceNo =" + licence + ";";
-                SqlCommand cmd = new SqlCommand(query, con);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int a = reader.GetInt32(0);
-                    if(a != 0)
-                    {
-                        newLicense = true;
-                    }
-                }
-                if(newLicense == true)
-                {
-                    query = "INSERT INTO LicenceInfo(LicenceNo, UniqueNo, CustomerNo, Experationdate, CompanyName) Values(" + licence.LicenceNo + "," + licence.UniqueKey + "," + licence.CustomerNo + "," + licence.DateTo + "," + licence.CompanyName + ")";
-                    cmd = new SqlCommand(query, con);
-                    cmd.ExecuteNonQuery();
-                    return StatusCode(200, "Licence Created");
-                }
-                
-            }
-            return StatusCode(400, "Licence was not Created");
-            
-        }
-        [HttpPost]
-        [Route("api/AddNewDepartment/{licence}")]
-        public IActionResult AddNewDepartment([FromBody] string licence)
-        {
+            //using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
+            //{
+            //    string query = "SELECT Select LicenceNo From LicenceInfo WHERE LicenceNo =" + licence + ";";
+            //    SqlCommand cmd = new SqlCommand(query, con);
+            //    SqlDataReader reader = cmd.ExecuteReader();
+            //    while (reader.Read())
+            //    {
+            //        int a = reader.GetInt32(0);
+            //        if (a != 0)
+            //        {
+            //            newLicense = true;
+            //        }
+            //    }
+            //    if (newLicense == true)
+            //    {
+            //        query = "INSERT INTO LicenceInfo(LicenceNo, UniqueNo, CustomerNo, Experationdate, CompanyName) Values(" + licence.LicenceNo + "," + licence.UniqueKey + "," + licence.CustomerNo + "," + licence.DateTo + "," + licence.CompanyName + ")";
+            //        cmd = new SqlCommand(query, con);
+            //        cmd.ExecuteNonQuery();
+            //        return StatusCode(200, "Licence Created");
+            //    }
 
-
-            using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
-            {
-                string query = "Select LicenceNo From LicenceInfo";
-
-
-                query = "INSERT INTO Departments (DepartmentID,LicenceNo,Users,SupplierName,Address,Phone) Values (1,1000,3,'PCK','Nordre Kullerød','12345678')";
-                SqlCommand cmd = new SqlCommand(query, con);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-
-                }
-            }
-            return StatusCode(200, "Deptartment added to licence" + licence + "");
+            //}
+            //return StatusCode(400, "Licence was not Created");
 
         }
+        //[HttpPost]
+        //[Route("api/AddNewDepartment/{licence}")]
+        //public IActionResult AddNewDepartment([FromBody] string licence)
+        //{
+
+
+        //    using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
+        //    {
+        //        string query = "Select LicenceNo From LicenceInfo";
+
+
+        //        query = "INSERT INTO Departments (DepartmentID,LicenceNo,Users,SupplierName,Address,Phone) Values (1,1000,3,'PCK','Nordre Kullerød','12345678')";
+        //        SqlCommand cmd = new SqlCommand(query, con);
+        //        SqlDataReader reader = cmd.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+
+        //        }
+        //    }
+        //    return StatusCode(200, "Deptartment added to licence" + licence + "");
+
+        //}
         
-        [HttpPut]
-        [Route("api/UpdateLicence/{licence}")]
-        public IActionResult UpdateLicence([FromBody] string licence) //Update a licence
-        {
-            LicenceInfoModel info = dbcom.FetchData(licence);
-            string testDate = "2020-12-13";
-            DateTime date = DateTime.ParseExact(testDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
-            string companyName = "asdewwqe";
-            if (string.IsNullOrWhiteSpace(info.LicenceNo))
-            {
-                return StatusCode(401, "Licence Not Found.");
-            }
-            using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
-            {
+        //[HttpPut]
+        //[Route("api/UpdateLicence/{licence}")]
+        //public IActionResult UpdateLicence([FromBody] string licence) //Update a licence
+        //{
+        //    LicenceInfoModel info = dbcom.FetchData(licence);
+        //    string testDate = "2020-12-13";
+        //    DateTime date = DateTime.ParseExact(testDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+        //    string companyName = "asdewwqe";
+        //    if (string.IsNullOrWhiteSpace(info.LicenceNo))
+        //    {
+        //        return StatusCode(401, "Licence Not Found.");
+        //    }
+        //    using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
+        //    {
 
-                string query = "UPDATE LicenceInfo SET Experationdate =" + date + ", CompanyName =" + companyName + " WHERE LicenceNo =" + Int32.Parse(licence) + "";
-                SqlCommand cmd = new SqlCommand(query, con);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
+        //        string query = "UPDATE LicenceInfo SET Experationdate =" + date + ", CompanyName =" + companyName + " WHERE LicenceNo =" + Int32.Parse(licence) + "";
+        //        SqlCommand cmd = new SqlCommand(query, con);
+        //        SqlDataReader reader = cmd.ExecuteReader();
+        //        while (reader.Read())
+        //        {
 
-                }
-            }
-            return StatusCode(200, "Licence Updated.");
+        //        }
+        //    }
+        //    return StatusCode(200, "Licence Updated.");
 
-        }
+        //}
 
     }
 }
