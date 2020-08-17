@@ -38,8 +38,8 @@ namespace APITest
 
         public string GetConsString()
         {
-            
-            return String.Format(@"Server=DESKTOP-4Q6ALMB\LARS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
+            return String.Format(@"Server=DESKTOP-6SL0J8D\SQLEXPRESS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
+            //return String.Format(@"Server=DESKTOP-4Q6ALMB\LARS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
         }
         public LicenceInfoModel ApiTestz(string a)
         {
