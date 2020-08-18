@@ -78,7 +78,7 @@ namespace APITest
                 if (newLicense == true)
                 {
 
-                    query = "INSERT INTO LicenceInfo(LicenceNo, UniqueKey, CustomerNo, Experationdate, CompanyName) Values(@param1,@param2,@param3,@param4,@param5)";
+                    query = "INSERT INTO LicenceInfo(LicenceNo, UniqueNo, CustomerNo, Experationdate, CompanyName) Values(@param1,@param2,@param3,@param4,@param5)";
                     cmd = new SqlCommand(query, con);
                     cmd.Parameters.Add("@param1", SqlDbType.Int).Value = licence.LicenceNo;
                     cmd.Parameters.Add("@param2", SqlDbType.NVarChar).Value = licence.UniqueKey;
@@ -109,24 +109,25 @@ namespace APITest
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    bool a = reader.IsDBNull(1);
-
-                    if(a == true)
+                    if(reader.IsDBNull(1) == true)
                     {
-
+                        newDepartment = true;
                     }
-
-                    if (!string.IsNullOrWhiteSpace(reader.GetInt32(0).ToString()))
+                    if(reader.IsDBNull(1) == false)
                     {
-                        newDepartment = false;
-                        return StatusCode(401, "Deparment already exists for that licence");
-                    }
+                        if(reader.GetInt32(1) == department.DepartmentId)
+                        {
+                            newDepartment = false;
+                            return StatusCode(401, "Deparmentnumber already exists for that licence");
+                        }
+                        
+                    } 
                     newDepartment = true;
                 }
                 reader.Close();
                 if (newDepartment == true)
                 {
-                    query = "INSERT INTO Departments (DepartmentID,LicenceNo,Users,SupplierName,StoreAddress,Email,Phone) Values (@param1,@param2,@param3,@param4,@param5,@param6,@param7)";
+                    query = "INSERT INTO Departments (DepartmentID,LicenceNo,Users,SupplierName,Address,Email,Phone) Values (@param1,@param2,@param3,@param4,@param5,@param6,@param7)";
                     cmd = new SqlCommand(query, con);
                     cmd.Parameters.Add("@param1", SqlDbType.Int).Value = department.DepartmentId;
                     cmd.Parameters.Add("@param2", SqlDbType.Int).Value = department.LicenceNo;
@@ -136,43 +137,65 @@ namespace APITest
                     cmd.Parameters.Add("@param6", SqlDbType.NVarChar).Value = department.Email;
                     cmd.Parameters.Add("@param7", SqlDbType.NVarChar).Value = department.Phone;
                     cmd.ExecuteNonQuery();
-                    //return StatusCode(200, "Department created for licence: " + department.LicenceNo + "");
+                    return StatusCode(200, "Department created for licence: " + department.LicenceNo + "");
                 }
             }
-            return StatusCode(200, "Department created for licence: " + department.LicenceNo + "");
+            
+            return StatusCode(400, "Deptartment: " + department.DepartmentId + " could not be added to licence" + department.LicenceNo + ". Licence might not exist");
 
         }
-        //Could catch if licence does not exist here
-        //return StatusCode(400, "Deptartment: " + department.DepartmentId +" could not be added to licence" + department.LicenceNo + "");
+        [HttpPut]
+        [Route("api/UpdateLicence")]
+        public IActionResult UpdateLicence([FromBody] LicenceInfoModel licence) //Update a licence
+        {
+            LicenceInfoModel info = dbcom.FetchData(licence.LicenceNo.ToString());
+            //string testDate = "2020-12-13";
+            //DateTime date = DateTime.ParseExact(testDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+            if (string.IsNullOrWhiteSpace(info.LicenceNo.ToString()))
+            {
+                return StatusCode(401, "Licence Not Found.");
+            }
+            using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
+            {
+                con.Open();
+                string query = "UPDATE LicenceInfo " +
+                    "SET Experationdate = @expdate WHERE LicenceNo = " + licence.LicenceNo + "";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@expdate", SqlDbType.Date).Value = licence.DateTo;
+                cmd.ExecuteNonQuery();
+                return StatusCode(200, "Experationdate has been updated to:" + licence.DateTo + "");
+                
+            }
+            
+        }
+        [HttpPut]
+        [Route("api/UpdateDepartment")]
+        public IActionResult UpdateDepartment([FromBody] DepartmentModel department) //Update a licence
+        {
+            LicenceInfoModel info = dbcom.FetchData(department.LicenceNo.ToString());
+            //string testDate = "2020-12-13";
+            //DateTime date = DateTime.ParseExact(testDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+            if (string.IsNullOrWhiteSpace(info.LicenceNo.ToString())) //TEST HERE -> 0 or null instead?
+            {
+                return StatusCode(401, "Licence Not Found.");
+            }
+            using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
+            {
+                con.Open();
+                string query = "UPDATE Departments " +
+                    "SET Users = @users WHERE LicenceNo =" + department.LicenceNo + " AND DepartmentId = " + department.DepartmentId + "";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@Users", SqlDbType.Int).Value = department.Users;
+                cmd.ExecuteNonQuery();
+                return StatusCode(200, "Department info updated!");
+
+            }
+
+        }
 
     }
-
-    //[HttpPut]
-    //[Route("api/UpdateLicence/{licence}")]
-    //public IActionResult UpdateLicence([FromBody] string licence) //Update a licence
-    //{
-    //    LicenceInfoModel info = dbcom.FetchData(licence);
-    //    string testDate = "2020-12-13";
-    //    DateTime date = DateTime.ParseExact(testDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
-    //    string companyName = "asdewwqe";
-    //    if (string.IsNullOrWhiteSpace(info.LicenceNo))
-    //    {
-    //        return StatusCode(401, "Licence Not Found.");
-    //    }
-    //    using (SqlConnection con = new SqlConnection(dbcom.GetConsString()))
-    //    {
-
-    //        string query = "UPDATE LicenceInfo SET Experationdate =" + date + ", CompanyName =" + companyName + " WHERE LicenceNo =" + Int32.Parse(licence) + "";
-    //        SqlCommand cmd = new SqlCommand(query, con);
-    //        SqlDataReader reader = cmd.ExecuteReader();
-    //        while (reader.Read())
-    //        {
-
-    //        }
-    //    }
-    //    return StatusCode(200, "Licence Updated.");
-
-    //}
 
 }
 

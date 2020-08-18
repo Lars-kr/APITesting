@@ -9,8 +9,8 @@ namespace APITest.Model
     public class LicenceInfoModel
     {
         [Required]
-        public string LicenceNo { get; set; }
-        public string CustomerNo { get; set; }
+        public int LicenceNo { get; set; }
+        public int CustomerNo { get; set; }
         public string UniqueKey { get; set; }
         public DateTime DateTo { get; set; }
         public string CompanyName { get; set; }

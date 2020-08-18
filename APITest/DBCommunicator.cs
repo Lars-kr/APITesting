@@ -26,9 +26,9 @@ namespace APITest
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    licence.LicenceNo = reader.GetInt32(1).ToString();
+                    licence.LicenceNo = reader.GetInt32(1);
                     licence.UniqueKey = reader.GetString(2);
-                    licence.CustomerNo = reader.GetInt32(3).ToString();
+                    licence.CustomerNo = reader.GetInt32(3);
                     licence.DateTo = reader.GetDateTime(4);
                     licence.CompanyName = reader.GetString(5);
                 }
@@ -38,26 +38,10 @@ namespace APITest
 
         public string GetConsString()
         {
-            return String.Format(@"Server=DESKTOP-6SL0J8D\SQLEXPRESS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
-            //return String.Format(@"Server=DESKTOP-4Q6ALMB\LARS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
+            //return String.Format(@"Server=DESKTOP-6SL0J8D\SQLEXPRESS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
+            return String.Format(@"Server=DESKTOP-4Q6ALMB\LARS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
         }
-        public LicenceInfoModel ApiTestz(string a)
-        {
-            LicenceInfoModel asd = new LicenceInfoModel();
-            if (a == "potato")
-            {
-                
-                asd.LicenceNo = "123";
-                asd.CustomerNo = "4124";
-                asd.UniqueKey = "124215215";
-                //asd.DateTo = "2020-12-14";
-            }
-            else
-            {
-                return new LicenceInfoModel();
-            }
-            return asd;
-        }
+
     }
 }
 
