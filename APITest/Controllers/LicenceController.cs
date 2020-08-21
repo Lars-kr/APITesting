@@ -54,6 +54,13 @@ namespace APITest
             //return StatusCode(404); 
             #endregion
         }
+
+        [HttpPost]
+        [Route("api/GetLicenceWithUniqueKey/{uniqueKey}")]
+        public IActionResult GetLicenceWithUniqueKey(string uniqueKey) // Controll with licence string
+        {
+            return StatusCode(200, dbcom.FetchDataOnUniqueKey(uniqueKey));
+        }
         [HttpPost]
         [Route("api/AddNewLicence")]
         public IActionResult AddNewLicence([FromBody] LicenceInfoModel licence)

@@ -36,6 +36,27 @@ namespace APITest
             return licence;
         }
 
+        public LicenceInfoModel FetchDataOnUniqueKey(string uniqueKey)
+        {
+            LicenceInfoModel licence = new LicenceInfoModel();
+            using (SqlConnection con = new SqlConnection(GetConsString()))
+            {
+                string query = "SELECT * FROM LicenceInfo WHERE UniqueNo = '" + uniqueKey + "'" ;
+                con.Open();
+                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    licence.LicenceNo = reader.GetInt32(1);
+                    licence.UniqueKey = reader.GetString(2);
+                    licence.CustomerNo = reader.GetInt32(3);
+                    licence.DateTo = reader.GetDateTime(4);
+                    licence.CompanyName = reader.GetString(5);
+                }
+            }
+            return licence;
+        }
+
         public string GetConsString()
         {
             //return String.Format(@"Server=DESKTOP-6SL0J8D\SQLEXPRESS;Database=ERPPOSLicenceDB;Trusted_Connection=True;");
